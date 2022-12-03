@@ -5,17 +5,14 @@ fun main() {
 
 fun calculatePriorities(
     input: String,
-    splitWith: (String) -> List<List<String>>
-) = splitWith(input).sumOf { charPriority(findCommonChar(it)) }
+    reorganiseWith: (List<String>) -> List<List<String>>
+) = reorganiseWith(input.split("\n")).sumOf { charPriority(findCommonChar(it)) }
 
-fun findCommonChar(compartments: List<String>)  =
+fun findCommonChar(compartments: List<String>) =
     compartments
         .drop(1)
-        .fold(compartments.first()) { commonItems, currentItem -> findCommonChars(commonItems, currentItem) }
+        .fold(compartments.first().toSet()) { commonItems, currentItem -> currentItem.toSet().intersect(commonItems) }
         .first()
-
-fun findCommonChars(str1: String, str2: String) =
-    str1.filter { str2.contains(it) }
 
 fun charPriority(chr: Char) =
     if (('a'..'z').contains(chr)) {
@@ -25,12 +22,9 @@ fun charPriority(chr: Char) =
     }
 
 // Puzzle one
-fun splitToHalvedLines(input: String) =
-    input.split("\n").map { it.splitInHalf() }
-
-fun String.splitInHalf() =
-    listOf(this.take(this.length/2), this.takeLast(this.length/2))
+fun splitToHalvedLines(input: List<String>) =
+    input.map { listOf(it.take(it.length/2), it.takeLast(it.length/2)) }
 
 // Puzzle two
-fun splitToGroupsOfThreeLines(input: String) =
-    input.split("\n").chunked(3)
+fun splitToGroupsOfThreeLines(input: List<String>) =
+    input.chunked(3)
