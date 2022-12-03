@@ -6,7 +6,12 @@ fun main() {
 fun calculatePriorities(
     input: String,
     reorganiseWith: (List<String>) -> List<List<String>>
-) = reorganiseWith(input.split("\n")).sumOf { charPriority(findCommonChar(it)) }
+) =
+    input
+        .split("\n")
+        .let(reorganiseWith)
+        .sumOf {
+            it.let(::findCommonChar).let(::charPriority) }
 
 fun findCommonChar(compartments: List<String>) =
     compartments
