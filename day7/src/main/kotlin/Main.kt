@@ -21,11 +21,11 @@ fun parseVolume(input: String) : Node {
     input
         .split("\r\n")
         .drop(1)
-        .fold(root) { currentNode, row -> parseRow(row, currentNode) }
+        .fold(root) { currentNode, line -> parseLine(line, currentNode) }
     return root
 }
 
-fun parseRow(line: String, current: Node): Node {
+fun parseLine(line: String, current: Node): Node {
     val output = line.split(" ")
 
     if (isInput(line) && output[1] == "cd") {
