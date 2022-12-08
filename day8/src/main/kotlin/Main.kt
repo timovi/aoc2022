@@ -8,10 +8,10 @@ data class TreeWithVisibility (
 
 fun main() {
     val input = {}::class.java.getResource("input.txt").readText()
-    val treesWithNeighbours = parseTreesVisibleFrom(input)
+    val treeVisibilities = parseTreesVisibleFrom(input)
 
-    println("Puzzle one: ${treesWithNeighbours.count { isVisible(it) }}")
-    println("Puzzle two: ${treesWithNeighbours.maxOf { scenicScoreOf(it) }}")
+    println("Puzzle one: ${treeVisibilities.count { isVisible(it) }}")
+    println("Puzzle two: ${treeVisibilities.maxOf { scenicScoreOf(it) }}")
 }
 
 fun parseTreesVisibleFrom(input: String) : List<TreeWithVisibility> {
