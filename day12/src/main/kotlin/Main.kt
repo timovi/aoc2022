@@ -15,11 +15,11 @@ fun main() {
 
     var nodes = mutableMapOf<Coordinate, Node>()
     nodes.putAll(mapToNodes(map, setOf('S')).map { it.coordinate to it })
-    println("Puzzle one: ${findShortestPath(nodes, nodes.values.filter { it.distance == 0 })}")
+    println("Puzzle one: ${shortestPathWithDijkstra(nodes, nodes.values.filter { it.distance == 0 })}")
 
     nodes = mutableMapOf()
     nodes.putAll(mapToNodes(map, setOf('S','a')).map { it.coordinate to it })
-    println("Puzzle two: ${findShortestPath(nodes, nodes.values.filter { it.distance == 0 })}")
+    println("Puzzle two: ${shortestPathWithDijkstra(nodes, nodes.values.filter { it.distance == 0 })}")
 }
 
 fun mapToNodes(map: List<String>, initialChars: Set<Char>) =
@@ -33,7 +33,7 @@ fun mapToNodes(map: List<String>, initialChars: Set<Char>) =
         }
     }
 
-fun findShortestPath(allNodes: MutableMap<Coordinate, Node>, start: List<Node>) : Int {
+fun shortestPathWithDijkstra(allNodes: MutableMap<Coordinate, Node>, start: List<Node>) : Int {
     var current = start.first()
     val unvisited = mutableListOf<Node>()
     unvisited.addAll(allNodes.values)
