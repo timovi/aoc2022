@@ -1,12 +1,9 @@
-import java.util.Deque
-
 data class Coordinate(val x: Int, val y: Int)
 data class Node(
     val char: Char,
     val coordinate: Coordinate,
     val neighbours: List<Coordinate>,
-    val distance: Int,
-    val visited: Boolean)
+    val distance: Int)
 
 fun main() {
     val input = {}::class.java.getResource("input.txt").readText()
@@ -15,12 +12,11 @@ fun main() {
 
     var nodes = mutableMapOf<Coordinate, Node>()
     nodes.putAll(mapToNodes(map, setOf('S')).map { it.coordinate to it })
-    println("Puzzle one: ${findPaths(nodes, nodes.values.filter { it.distance == 0 })}")
+    println("Puzzle one: ${findShortestPath(nodes, nodes.values.filter { it.distance == 0 })}")
 
     nodes = mutableMapOf()
     nodes.putAll(mapToNodes(map, setOf('S','a')).map { it.coordinate to it })
-    val start = nodes.values.filter { it.distance == 0 }
-    println("Puzzle two: ${findPaths(nodes, nodes.values.filter { it.distance == 0 })}")
+    println("Puzzle two: ${findShortestPath(nodes, nodes.values.filter { it.distance == 0 })}")
 }
 
 fun mapToNodes(map: List<String>, initialChars: Set<Char>) =
@@ -34,7 +30,7 @@ fun mapToNodes(map: List<String>, initialChars: Set<Char>) =
         }
     }
 
-fun findPaths(allNodes: MutableMap<Coordinate, Node>, start: List<Node>) : Int {
+fun findShortestPath(allNodes: MutableMap<Coordinate, Node>, start: List<Node>) : Int {
     var current = start.first()
     val unvisited = mutableListOf<Node>()
     unvisited.addAll(allNodes.values)
@@ -43,7 +39,7 @@ fun findPaths(allNodes: MutableMap<Coordinate, Node>, start: List<Node>) : Int {
         current.neighbours.forEach { neighbour ->
             val node = allNodes[neighbour]!!
             val newDistance = Math.min(current.distance + 1, node.distance)
-            val newNode = Node(node.char, node.coordinate, node.neighbours, newDistance, false)
+            val newNode = Node(node.char, node.coordinate, node.neighbours, newDistance)
             allNodes[neighbour] = newNode
             if (unvisited.contains(node)) {
                 unvisited.remove(node)
@@ -85,20 +81,12 @@ fun Coordinate.toNode(map: List<String>, distance: Int) : Node {
     val down  = Coordinate(this.x, this.y+1);
     val right = Coordinate(this.x+1, this.y);
 
-    if (this.canTravelTo(map, up)) {
-        next.add(up)
-    }
-    if (this.canTravelTo(map, left)) {
-        next.add(left)
-    }
-    if (this.canTravelTo(map, down)) {
-        next.add(down)
-    }
-    if (this.canTravelTo(map, right)) {
-        next.add(right)
-    }
+    if (this.canTravelTo(map, up))    { next.add(up) }
+    if (this.canTravelTo(map, left))  { next.add(left) }
+    if (this.canTravelTo(map, down))  { next.add(down) }
+    if (this.canTravelTo(map, right)) { next.add(right) }
 
-    return Node(map[this.y][this.x],this, next, distance, false)
+    return Node(map[this.y][this.x],this, next, distance)
 }
 
 fun Node.isEnd() = this.char == 'E'
