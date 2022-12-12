@@ -1,4 +1,7 @@
-data class Coordinate(val x: Int, val y: Int)
+data class Coordinate(
+    val x: Int,
+    val y: Int)
+
 data class Node(
     val char: Char,
     val coordinate: Coordinate,
