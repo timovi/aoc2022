@@ -13,16 +13,26 @@ fun main() {
 
     val map = input.split("\r\n")
 
-    val allNodes = mutableMapOf<Coordinate, Node>()
-    allNodes.putAll(mapToNodes(map).map { it.coordinate to it })
-    val start = allNodes.values.first { it.char == 'S' }
+    var nodes = mutableMapOf<Coordinate, Node>()
+    nodes.putAll(mapToNodes(map, setOf('S')).map { it.coordinate to it })
+    println("Puzzle one: ${findPaths(nodes, nodes.values.filter { it.distance == 0 })}")
 
-    println("Puzzle one: ${findPaths(allNodes, listOf(start))}")
-    println("Puzzle two: ")
+    nodes = mutableMapOf()
+    nodes.putAll(mapToNodes(map, setOf('S','a')).map { it.coordinate to it })
+    val start = nodes.values.filter { it.distance == 0 }
+    println("Puzzle two: ${findPaths(nodes, nodes.values.filter { it.distance == 0 })}")
 }
 
-fun mapToNodes(map: List<String>) =
-    map.flatMapIndexed() { y, row -> row.mapIndexed { x, _ -> Coordinate(x, y).toNode(map) }}
+fun mapToNodes(map: List<String>, initialChars: Set<Char>) =
+    map.flatMapIndexed() { y, row ->
+        row.mapIndexed { x, char ->
+            val distance = when (initialChars.contains(char)) {
+                true -> 0
+                false -> 999999
+            }
+            Coordinate(x, y).toNode(map, distance)
+        }
+    }
 
 fun findPaths(allNodes: MutableMap<Coordinate, Node>, start: List<Node>) : Int {
     var current = start.first()
@@ -67,7 +77,7 @@ fun Coordinate.canTravelTo(map: List<String>, coordinate: Coordinate): Boolean {
     }
 }
 
-fun Coordinate.toNode(map: List<String>) : Node {
+fun Coordinate.toNode(map: List<String>, distance: Int) : Node {
     val next = mutableListOf<Coordinate>()
 
     val up    = Coordinate(this.x, this.y-1)
@@ -88,12 +98,7 @@ fun Coordinate.toNode(map: List<String>) : Node {
         next.add(right)
     }
 
-    val char = map[this.y][this.x]
-    val distance = when(char) {
-        'S' -> 0
-        else -> 999999
-    }
-    return Node(char,this, next, distance, false)
+    return Node(map[this.y][this.x],this, next, distance, false)
 }
 
 fun Node.isEnd() = this.char == 'E'
