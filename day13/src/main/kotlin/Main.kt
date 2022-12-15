@@ -11,7 +11,7 @@ fun main() {
         }
     }.filter { it != -1 }
     println("Puzzle one: ${orderedIndexes1.sum()}")
-    
+
     val divider1 = "[[2]]"
     val divider2 = "[[6]]"
     val ordered = ("$input\r\n$divider1\r\n$divider2")
